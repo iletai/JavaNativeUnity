@@ -254,7 +254,7 @@ namespace IntegrationJavaNativeSDK
 
         public static long GetMemorySizeInBytes()
         {
-            return JniCommonUtils.StaticCall<long>("getMemorySizeInBytes", a, "com.library.javanativeunity.DeviceUtils", new object[] { JniCommonUtils.AndroidApplication });
+            return JniCommonUtils.StaticCall<long>("getMemorySizeInBytes", 0, "com.library.javanativeunity.DeviceUtils", new object[] { JniCommonUtils.AndroidApplication });
         }
 
         public static int GetVolumeDevice()
