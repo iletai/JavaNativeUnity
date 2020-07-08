@@ -15,78 +15,20 @@ namespace IntegrationJavaNativeSDK
 {
     public static class DeviceInfo
     {
-        #region NONE_NATIVE_CODE
+       
+
+
+        #region SOME_FUNCTION_NONE_NATIVE_SUGGEST
         [DllImport("kernel32")]
         extern static UInt64 GetTickCount64();
 
 
-        public static string GenereateUUID()
-        {
-            string uuid = "";
-            uuid = SystemInfo.deviceUniqueIdentifier;
-            uuid = uuid.Replace("-", "");
-            return uuid.ToLower();
-        }
 
         public static float GetBatteryLevel()
         {
             return SystemInfo.batteryLevel;
         }
-
-     
-        public static string GetOperatingSystemVersionString()
-        {
-            return SystemInfo.operatingSystem;
-        }
-        public static string GetLanguageCode()
-        {
-            switch (Application.systemLanguage)
-            {
-                case SystemLanguage.Afrikaans: return "af";
-                case SystemLanguage.Arabic: return "ar";
-                case SystemLanguage.Basque: return "eu";
-                case SystemLanguage.Belarusian: return "be";
-                case SystemLanguage.Bulgarian: return "bg";
-                case SystemLanguage.Catalan: return "ca";
-                case SystemLanguage.Chinese: return "zh";
-                case SystemLanguage.Czech: return "cs";
-                case SystemLanguage.Danish: return "da";
-                case SystemLanguage.Dutch: return "nl";
-                case SystemLanguage.English: return "en";
-                case SystemLanguage.Estonian: return "et";
-                case SystemLanguage.Faroese: return "fo";
-                case SystemLanguage.Finnish: return "fi";
-                case SystemLanguage.French: return "fr";
-                case SystemLanguage.German: return "de";
-                case SystemLanguage.Greek: return "el";
-                case SystemLanguage.Hebrew: return "he";
-                case SystemLanguage.Hungarian: return "hu";
-                case SystemLanguage.Icelandic: return "is";
-                case SystemLanguage.Indonesian: return "id";
-                case SystemLanguage.Italian: return "it";
-                case SystemLanguage.Japanese: return "ja";
-                case SystemLanguage.Korean: return "ko";
-                case SystemLanguage.Latvian: return "lv";
-                case SystemLanguage.Lithuanian: return "lt";
-                case SystemLanguage.Norwegian: return "nn";
-                case SystemLanguage.Polish: return "pl";
-                case SystemLanguage.Portuguese: return "pt";
-                case SystemLanguage.Romanian: return "ro";
-                case SystemLanguage.Russian: return "ru";
-                case SystemLanguage.SerboCroatian: return "sr";
-                case SystemLanguage.Slovak: return "sk";
-                case SystemLanguage.Slovenian: return "sl";
-                case SystemLanguage.Spanish: return "es";
-                case SystemLanguage.Swedish: return "sv";
-                case SystemLanguage.Thai: return "th";
-                case SystemLanguage.Turkish: return "tr";
-                case SystemLanguage.Ukrainian: return "uk";
-                case SystemLanguage.Vietnamese: return "vi";
-                default: return "en";
-            }
-        }
-
-        public static string GetIPAddress()
+        public static string GetLocalIPAddress()
         {
             //Check internet connection
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
@@ -205,11 +147,11 @@ namespace IntegrationJavaNativeSDK
         {
             return SystemInfo.processorCount;
         }
-        #endregion //NONE_NATIVE_CODE
-
+#endregion
         public static string GetNetworkCarrierName()
         {
             return JniCommonUtils.StaticCall<string>("getNetworkCarrierName", "Can't get network carier name", "com.library.javanativeunity.DeviceUtils", new object[] { JniCommonUtils.AndroidApplication });
+
         }
 
         public static string GetISOCountryCode()
@@ -239,48 +181,74 @@ namespace IntegrationJavaNativeSDK
 
             return "";
         }
- 
+
+        public static string GetMobieCountryCode()
+        {
+            return "";
+        }
 
         public static string GetMobieNetworkCode()
         {
+            {
                 AndroidJavaObject jo = JniCommonUtils.Activity.Call<AndroidJavaObject>("getSystemService", "phone");
                 return jo.Call<string>("getSimOperator");
+            }
+
+        }
+
+        public static string GetSupportedInterfaceOrientations()
+        {
+            return GetOrientation();
+        }
+
+        public static string GetOperatingSystemVersionString()
+        {
+
+            return SystemInfo.operatingSystem;
         }
 
         public static bool IsPowerSaveMode()
         {
             return JniCommonUtils.StaticCall<bool>("isPowerSaveModeEnabled", false, "com.library.javanativeunity.DeviceUtils");
+
+
         }
 
         public static long GetMemorySizeInBytes()
         {
-            return JniCommonUtils.StaticCall<long>("getMemorySizeInBytes", 0, "com.library.javanativeunity.DeviceUtils", new object[] { JniCommonUtils.AndroidApplication });
+            long a = 0;
+            return JniCommonUtils.StaticCall<long>("getMemorySizeInBytes", a, "com.library.javanativeunity.DeviceUtils", new object[] { JniCommonUtils.AndroidApplication });
+
         }
 
         public static int GetVolumeDevice()
         {
+            {
                 return JniCommonUtils.StaticCall<int>("getVolumeDevice", 0, "com.library.javanativeunity.DeviceUtils", new object[] { JniCommonUtils.AndroidApplication });
+            }
+
         }
 
         public static double GetUsedMemory()
         {
             return JniCommonUtils.StaticCall<double>("getUsedMemory", 0, "com.library.javanativeunity.DeviceUtils", new object[] { JniCommonUtils.AndroidApplication });
+
         }
 
         public static float GetScreenScale()
         {
+            {
                 var currentDPI = (int)Registry.GetValue("HKEY_CURRENT_USER\\Control Panel\\Desktop", "LogPixels", 96);
                 return 96 / (float)currentDPI;
+            }
+
         }
 
         public static TimeSpan GetUpTime()
         {
-                //Windows
-                //return TimeSpan.FromMilliseconds(GetTickCount64());
-        
-                long timeUpDeviceAndroid = JniCommonUtils.StaticCall<long>("uptimeMillis", 1, "com.library.javanativeunity.DeviceUtils");
-                TimeSpan time = TimeSpan.FromMilliseconds(timeUpDeviceAndroid);
-                return time;
+            long timeUpDeviceAndroid = JniCommonUtils.StaticCall<long>("uptimeMillis", 1, "com.library.javanativeunity.DeviceUtils");
+            TimeSpan time = TimeSpan.FromMilliseconds(timeUpDeviceAndroid);
+            return time;
         }
 
         public static float GetCpuTemperature()
@@ -297,8 +265,8 @@ namespace IntegrationJavaNativeSDK
         {
             //We using method get from Java native. But in Unity 2019 or newer, I recommend using "Screen.brightness".
             return JniCommonUtils.StaticCall<int>("getScreenBrightness", 0, "com.library.javanativeunity.DeviceUtils", new object[] { JniCommonUtils.AndroidApplication });
-
         }
+
     }
 
 }
